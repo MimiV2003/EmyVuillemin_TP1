@@ -1,3 +1,6 @@
+#TP1 EmyVuillemin
+#Importe
+
 import sys
 import json
 
@@ -9,8 +12,11 @@ from PySide6.QtWidgets import (
 )
 
 
+#Commencer par le data_small.json
+
 json_file = sys.argv[1]
-print(json_file)
+
+print("JSON FILE >>>>>>>> " + json_file +  "<<<<<<<<<<")
 
 try:
     file = open(json_file)
