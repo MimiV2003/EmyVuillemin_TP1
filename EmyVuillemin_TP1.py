@@ -8,13 +8,37 @@ from PySide6.QtWidgets import (
     QApplication,
     QMainWindow,
     QTableWidget,
-    QTableWidgetItem
+    QTableWidgetItem,
+    QVBoxLayout,
+    QWidget
 )
 
+#Faire une barre de recherche
 
-#Commencer par le data_small.json
+class MainWindow(QMainWindow):
 
-json_file = sys.argv[1]
+    def __init__(self):
+
+        super().__init__()
+        self.setGeometry(600, 100, 800, 600)
+        self.setWindowTitle("Control Panel")
+
+        container = QWidget()
+        container_layout = QVBoxLayout()
+        container.setLayout(container_layout)
+        self.setCentralWidget(container)
+
+app = QApplication([])
+window = MainWindow()
+window.show()
+
+
+    
+    
+
+json_file = sys.argv[2]
+# tableau 1 c'est le large
+# tableau 2 c'est le small
 
 print("JSON FILE >>>>>>>> " + json_file +  "<<<<<<<<<<")
 
@@ -25,35 +49,34 @@ try:
 except:
     print(f"Could not load data from {json_file}")
 
-for i in data:
-    print("Keys\n")
-    for k in i.keys():
-        print(f"     - {k}")
-    print("\n")
-    print("Values\n")
-    for v in i.values():
-        print(f"     - {v}")
-    print("\n")
-    print("items\n")
-    for e in i.items():
-        print(f"     - {e}")
-    print("\n")
+def trier(tableau):
+
+    #Ordre croissant et decroissant
+    tableau.setSortingEnabled(True)#Par contre marche seulement par ordre alphabethique // Doit cliquer sur le tableau pour changer l'ordre
+
+#-----------------------------------------------------------------------------------------------------
+#Tableau
 
 app = QApplication([])
 
 tableau = QTableWidget()
-tableau.setRowCount(3)
-tableau.setColumnCount(3)
-tableau.setHorizontalHeaderLabels(["name", "price", "type"])
+tableau.setRowCount(len(data))
+tableau.setColumnCount(len(data[0])) # 0 pour la premiere ligne (seulement la premiere boite)
+tableau.setHorizontalHeaderLabels(list(data[0].keys()))
 
-# fill the form
 for i in range(len(data)):
     item = data[i]
-    tableau.setItem(i, 0, QTableWidgetItem(item["name"]))
-    tableau.setItem(i, 1, QTableWidgetItem(item["price"]))
-    tableau.setItem(i, 2, QTableWidgetItem(item["type"]))
+    list(item.keys())
+    for t in range(len(list(data[i].keys()))):
+        tableau.setItem(i, t, QTableWidgetItem(str(item[list(item.keys())[t]])))# str pour pouvoir mettre des nombres
+
+trier(tableau)
 
 window = QMainWindow();
+
+window.resize(tableau.horizontalHeader().length() + tableau.verticalHeader().width() + 30, 500)
+
 window.setCentralWidget(tableau)
+
 window.show()
 sys.exit(app.exec())
