@@ -13,28 +13,6 @@ from PySide6.QtWidgets import (
     QWidget
 )
 
-#Faire une barre de recherche
-
-class MainWindow(QMainWindow):
-
-    def __init__(self):
-
-        super().__init__()
-        self.setGeometry(600, 100, 800, 600)
-        self.setWindowTitle("Control Panel")
-
-        container = QWidget()
-        container_layout = QVBoxLayout()
-        container.setLayout(container_layout)
-        self.setCentralWidget(container)
-
-app = QApplication([])
-window = MainWindow()
-window.show()
-
-
-    
-    
 
 json_file = sys.argv[2]
 # tableau 1 c'est le large
