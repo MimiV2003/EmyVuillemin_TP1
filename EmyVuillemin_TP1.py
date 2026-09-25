@@ -1,8 +1,9 @@
 #TP1 EmyVuillemin
-#Importe
+#Importe-----------------------------------------------------------------------------------------------------
 
 import sys
 import json
+import os #Affiche le nom, la taille en memoire et le nbr element du fichier
 
 from PySide6.QtWidgets import (
     QApplication,
@@ -11,10 +12,12 @@ from PySide6.QtWidgets import (
     QTableWidgetItem,
     QVBoxLayout,
     QWidget,
-    QLineEdit
+    QLineEdit,
+    QLabel
 )
+
 #----------------------------------------------------------------------------------------------------------
-#Creation de barre de recherche
+#Creation de la fenetre, son conteneur principale et barre de recherche
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -25,18 +28,27 @@ class MainWindow(QMainWindow):
         #Widget principal
         central_widget = QWidget()
         layout = QVBoxLayout(central_widget)
+
+        #Affichage du nom du fichier, taille de memoire, nbr element du fichier---------------------------------
         
+        #QLabel sert a afficher le texte dans le MainWindow
+        #Le f sert inserer directement les variables dans une chaine de caracteres
+        #basename recupere nom du fichier
+
+        self.file_info = QLabel(f"Nom : {os.path.basename(json_file)} | "f"Taille : {os.path.getsize(json_file)} octets | "f"Nombre d'elements : {len(data)}" )
+
+        layout.addWidget(self.file_info)
 
         #Barre de recherche-------------------------------------------------------------------------------------
         self.searchbar = QLineEdit() #Creation de la barre
-        self.searchbar.setPlaceholderText("Search devices...") #Affichage du texte sur la barre
-        self.searchbar.textChanged.connect(self.update_display)#Chaque fois que le texte change va appeler la fonction (update_display)
+        self.searchbar.setPlaceholderText("Rechercher...") #Affichage du texte sur la barre
+        self.searchbar.textChanged.connect(self.update_display) #Chaque fois que le texte change va appeler la fonction (update_display)
         #Grace a cette fonction, dès la premiere lettres ou chiffre = trie deja le resultat
 
-        layout.addWidget(self.searchbar)#Ajoute
+        layout.addWidget(self.searchbar) #Ajoute
 
         self.tableau = tableau
-        layout.addWidget(self.tableau)# Met le tableau en dessous de la barre de recherche
+        layout.addWidget(self.tableau) #Met le tableau en dessous de la barre de recherche
 
         self.setCentralWidget(central_widget)
 
@@ -45,19 +57,19 @@ class MainWindow(QMainWindow):
     def update_display(self, text):
 
         #Nettoyage
-        search = text.strip().casefold()#Strip ca enleve les espaces
+        search = text.strip().casefold() #Strip ca enleve les espaces
         #Casefold permet de faire une recherche peut importe
         #La minuscules/majuscules
 
-        for row in range(self.tableau.rowCount()):#Nbr de lignes
+        for row in range(self.tableau.rowCount()): #Nbr de lignes
 
             found = False
 
-            for column in range(self.tableau.columnCount()):#Parcours les colonnes
+            for column in range(self.tableau.columnCount()): #Parcours les colonnes
 
-                item = self.tableau.item(row, column)#Trouve la bulle
+                item = self.tableau.item(row, column) #Trouve la bulle
 
-                if item and search in item.text().casefold():#Assurer que le texte rechercher est bien 
+                if item and search in item.text().casefold(): #Assurer que le texte rechercher est bien 
                     #dans cette bulle du tableau
 
                     found = True
@@ -75,11 +87,18 @@ json_file = sys.argv[2]
 print("JSON FILE >>>>>>>> " + json_file +  "<<<<<<<<<<")
 
 try:
-    file = open(json_file, encoding= "utf-8")#Grace a utf-8, les caracteres speciaux sont visible
+    file = open(json_file, encoding= "utf-8") #Grace a utf-8, les caracteres speciaux sont visible
     data = json.load(file)
     print(type(data))
+
+    #Imprime seulement dans la console et non dans le window
+    print("Nom du fichier :", os.path.basename(json_file))
+    print("Taille du fichier :", os.path.getsize(json_file), "octets")
+    print("Nombre d'elements:", len(data))
+
 except:
     print(f"Could not load data from {json_file}")
+    
 
 #--------------------------------------------------------------------------------------------------------
 #Croissant/Decroissant
@@ -87,7 +106,7 @@ except:
 def trier(tableau):
 
     #Ordre croissant et decroissant
-    tableau.setSortingEnabled(True)#Par contre marche seulement par ordre alphabethique 
+    tableau.setSortingEnabled(True) #Par contre marche seulement par ordre alphabethique 
     #Doit cliquer sur le tableau pour changer l'ordre
     #De plus, capte seulement le premier chiffre du nombre par ordre croi/decroi.
 
@@ -98,7 +117,7 @@ app = QApplication([])
 
 tableau = QTableWidget()
 tableau.setRowCount(len(data))
-tableau.setColumnCount(len(data[0])) # 0 pour la premiere ligne (seulement la premiere boite)
+tableau.setColumnCount(len(data[0])) #0 pour la premiere ligne (seulement la premiere boite)
 tableau.setHorizontalHeaderLabels(list(data[0].keys()))
 
 #------------------------------------------------------------------------------------------------------
@@ -108,7 +127,7 @@ for i in range(len(data)): #ligne par ligne
     item = data[i]
     list(item.keys())
     for t in range(len(list(data[i].keys()))):
-        tableau.setItem(i, t, QTableWidgetItem(str(item[list(item.keys())[t]])))# str pour pouvoir mettre des nombres
+        tableau.setItem(i, t, QTableWidgetItem(str(item[list(item.keys())[t]]))) #str pour pouvoir mettre des nombres
 
 #----------------------------------------------------------------------------------------------------------
 
@@ -116,7 +135,9 @@ trier(tableau)#Fonction pour mettre en ordre
 
 window = MainWindow();
 
-window.resize(tableau.horizontalHeader().length() + tableau.verticalHeader().width() + 30, 500)#Taille du tableau
+window.resize(tableau.horizontalHeader().length() + tableau.verticalHeader().width() + 30, 500) #Taille du tableau
 
 window.show()
 sys.exit(app.exec())
+
+#Fin--------------------------------------------------------------------------------------------------------
