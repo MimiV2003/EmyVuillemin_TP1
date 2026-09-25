@@ -36,6 +36,7 @@ class MainWindow(QMainWindow):
         #Le f sert inserer directement les variables dans une chaine de caracteres
         #basename recupere nom du fichier
         #QVBoxLayout organise les widgets verticalement
+        #os.path.getsize sert a obtenir la taille du fichier
 
         self.file_info = QLabel(f"Nom : {os.path.basename(json_file)} | "f"Taille : {os.path.getsize(json_file)} octets | "f"Nombre d'elements : {len(data)}" )
 
@@ -72,6 +73,7 @@ class MainWindow(QMainWindow):
             for column in range(self.tableau.columnCount()): #Parcours les colonnes
 
                 item = self.tableau.item(row, column) #Trouve la bulle
+                #Row = ranger et Column = colonne
 
                 if item and search in item.text().casefold(): #Assurer que le texte rechercher est bien dans cette bulle du tableau
 
@@ -110,7 +112,7 @@ def trier(tableau):
 
     #Ordre croissant et decroissant
     tableau.setSortingEnabled(True) #Par contre marche seulement par ordre alphabethique 
-    #Doit cliquer sur le tableau pour changer l'ordre
+    #Doit cliquer sur une colonne pour changer l'ordre /Chaque colone a son ordre
     #De plus, capte seulement le premier chiffre du nombre par ordre croi/decroi.
     #Exemple: le 28500 est considere plus petit que 3200 car le premier chiffre est 2
 
@@ -130,7 +132,7 @@ tableau.setHorizontalHeaderLabels(list(data[0].keys()))
 for i in range(len(data)): #ligne par ligne
     item = data[i]
     list(item.keys())
-    for t in range(len(list(data[i].keys()))):
+    for t in range(len(list(data[i].keys()))): #Chaque information triee, t = colonne, i = items
         tableau.setItem(i, t, QTableWidgetItem(str(item[list(item.keys())[t]]))) #str pour pouvoir mettre des nombres
 
 #----------------------------------------------------------------------------------------------------------
