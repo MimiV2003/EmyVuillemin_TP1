@@ -17,7 +17,7 @@ from PySide6.QtWidgets import (
 )
 
 #----------------------------------------------------------------------------------------------------------
-#Creation de la fenetre, son conteneur principale et barre de recherche
+#Creation de la fenetre, son conteneur principale, barre de recherche et affichage de donnee---------------
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -29,21 +29,25 @@ class MainWindow(QMainWindow):
         central_widget = QWidget()
         layout = QVBoxLayout(central_widget)
 
+        #-------------------------------------------------------------------------------------------------------
         #Affichage du nom du fichier, taille de memoire, nbr element du fichier---------------------------------
-        
+
         #QLabel sert a afficher le texte dans le MainWindow
         #Le f sert inserer directement les variables dans une chaine de caracteres
         #basename recupere nom du fichier
+        #QVBoxLayout organise les widgets verticalement
 
         self.file_info = QLabel(f"Nom : {os.path.basename(json_file)} | "f"Taille : {os.path.getsize(json_file)} octets | "f"Nombre d'elements : {len(data)}" )
 
-        layout.addWidget(self.file_info)
+        layout.addWidget(self.file_info)#Met la barre de recherche en dessous
 
+        #-------------------------------------------------------------------------------------------------------
         #Barre de recherche-------------------------------------------------------------------------------------
+
         self.searchbar = QLineEdit() #Creation de la barre
         self.searchbar.setPlaceholderText("Rechercher...") #Affichage du texte sur la barre
         self.searchbar.textChanged.connect(self.update_display) #Chaque fois que le texte change va appeler la fonction (update_display)
-        #Grace a cette fonction, dès la premiere lettres ou chiffre = trie deja le resultat
+        #Grace a cette fonction, dès la premiere lettre ou chiffre = trie deja le resultat
 
         layout.addWidget(self.searchbar) #Ajoute
 
@@ -52,14 +56,14 @@ class MainWindow(QMainWindow):
 
         self.setCentralWidget(central_widget)
 
-
+    #----------------------------------------------------------------------------------------------------------
     #Filtrage--------------------------------------------------------------------------------------------------
+
     def update_display(self, text):
 
         #Nettoyage
         search = text.strip().casefold() #Strip ca enleve les espaces
-        #Casefold permet de faire une recherche peut importe
-        #La minuscules/majuscules
+        #Casefold permet de faire une recherche peut importe la minuscule/majuscule
 
         for row in range(self.tableau.rowCount()): #Nbr de lignes
 
@@ -69,18 +73,17 @@ class MainWindow(QMainWindow):
 
                 item = self.tableau.item(row, column) #Trouve la bulle
 
-                if item and search in item.text().casefold(): #Assurer que le texte rechercher est bien 
-                    #dans cette bulle du tableau
+                if item and search in item.text().casefold(): #Assurer que le texte rechercher est bien dans cette bulle du tableau
 
                     found = True
                     break
 
-            self.tableau.setRowHidden(row, not found)#Cache ou affiche la ligne
+            self.tableau.setRowHidden(row, not found) #Cache ou affiche la ligne
 
 #-------------------------------------------------------------------------------------------------------
-# Utilisation du JSON file
+# Utilisation du JSON file------------------------------------------------------------------------------
 
-json_file = sys.argv[2]
+json_file = sys.argv[1]
 # tableau 1 c'est le large
 # tableau 2 c'est le small
 
@@ -101,7 +104,7 @@ except:
     
 
 #--------------------------------------------------------------------------------------------------------
-#Croissant/Decroissant
+#Croissant/Decroissant-----------------------------------------------------------------------------------
 
 def trier(tableau):
 
@@ -109,9 +112,10 @@ def trier(tableau):
     tableau.setSortingEnabled(True) #Par contre marche seulement par ordre alphabethique 
     #Doit cliquer sur le tableau pour changer l'ordre
     #De plus, capte seulement le premier chiffre du nombre par ordre croi/decroi.
+    #Exemple: le 28500 est considere plus petit que 3200 car le premier chiffre est 2
 
 #-----------------------------------------------------------------------------------------------------
-#Tableau
+#Tableau----------------------------------------------------------------------------------------------
 
 app = QApplication([])
 
@@ -121,7 +125,7 @@ tableau.setColumnCount(len(data[0])) #0 pour la premiere ligne (seulement la pre
 tableau.setHorizontalHeaderLabels(list(data[0].keys()))
 
 #------------------------------------------------------------------------------------------------------
-#Mettre les donnees dans le QTableWidget (Remplissage de tableau)
+#Mettre les donnees dans le QTableWidget (Remplissage de tableau)--------------------------------------
 
 for i in range(len(data)): #ligne par ligne
     item = data[i]
@@ -130,6 +134,7 @@ for i in range(len(data)): #ligne par ligne
         tableau.setItem(i, t, QTableWidgetItem(str(item[list(item.keys())[t]]))) #str pour pouvoir mettre des nombres
 
 #----------------------------------------------------------------------------------------------------------
+#Execute---------------------------------------------------------------------------------------------------
 
 trier(tableau)#Fonction pour mettre en ordre
 

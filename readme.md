@@ -10,15 +10,15 @@ créer l'interface.
 Consignes
 
 ● Charger en mémoire les données issues d’un fichier JSON reçu en paramètre. Le chargement devra être en
-mesure de gérer les erreurs des données.
+mesure de gérer les erreurs des données. | C'est fait
 
-● Implémenter une interface permettant d’afficher les données sous forme de tableau.
+● Implémenter une interface permettant d’afficher les données sous forme de tableau. | C'est fait
 
-● Implémenter le tri en ordre croissant et décroissant par colonne.
+● Implémenter le tri en ordre croissant et décroissant par colonne. | C'est fait
 
-● Implémenter une fonctionnalité de recherche.
+● Implémenter une fonctionnalité de recherche. | C'est fait
 
-● Afficher le nom, la taille en mémoire et le nombre d’éléments du fichier.
+● Afficher le nom, la taille en mémoire et le nombre d’éléments du fichier. | C'est fait
 
 ● Suivre les standards de programmation vus en classe tels que les conventions de noms, de structure des
 fonctions (PEP8), Etc.
